@@ -1,0 +1,66 @@
+# ── Environment ──────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Python ───────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+.Python
+pip-wheel-metadata/
+
+# ── uv ───────────────────────────────────────
+.uv/
+uv.lock
+
+# ── Pytest / coverage ────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ── Node / Frontend ──────────────────────────
+node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/node_modules/
+
+# ── Delta / Spark ────────────────────────────
+/tmp/
+spark-warehouse/
+derby.log
+metastore_db/
+*.parquet
+*.delta
+
+# ── IDE ──────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Terraform ────────────────────────────────
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+!infra/terraform/*.tfvars.example
+
+# ── Logs ─────────────────────────────────────
+*.log
+logs/
