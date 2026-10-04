@@ -1,47 +1,197 @@
-# ⚡ Migrate.io - Universal Data Migration Platform
+# Migrate.io
 
-> **Natural Language to PySpark Pipeline Compiler with Schema Relationship Graphs & Staging-First Atomic Delta Commits.**
+<div align="center">
 
-Migrate.io is a full-stack, enterprise-grade data migration platform. It connects any source (object storage, data warehouses, RDBMS, ERPs, streaming) to any destination, automatically builds a multi-tenant schema relationship graph, converts natural-language instructions into deterministic logical DAGs, compiles them to clean PySpark code, runs staged execution, and performs atomic production commits via Delta MERGE.
+### AI-Powered Data Migration, ETL & PySpark Pipeline Platform
+
+**Natural language → schema-aware data pipeline → PySpark → staged execution → atomic Delta Lake commit**
+
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![PySpark](https://img.shields.io/badge/PySpark-ETL-FDEE21?style=for-the-badge&logo=apachespark&logoColor=black)](https://spark.apache.org/docs/latest/api/python/)
+[![Databricks](https://img.shields.io/badge/Databricks-Lakehouse-FF3621?style=for-the-badge&logo=databricks&logoColor=white)](https://www.databricks.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Neo4j](https://img.shields.io/badge/Neo4j-Schema_Graph-4581C3?style=for-the-badge&logo=neo4j&logoColor=white)](https://neo4j.com/)
+[![License](https://img.shields.io/badge/License-MIT-4267E8?style=for-the-badge)](LICENSE)
+
+**[Quick Start](#-quick-start) · [How It Works](#-how-it-works) · [Features](#-key-features) · [Architecture](#-platform-architecture) · [Testing](#-testing)**
+
+</div>
 
 ---
 
-## 🌟 Key Features
+## What is Migrate.io?
 
-- 🔌 **Universal Connector Framework**: Standardized plugin interface supporting S3, ADLS Gen2, GCS, MinIO, Databricks, PostgreSQL, SAP ECC, plus 5 synthetic mock connectors.
-- 🕸️ **Schema Relationship Graph**: Automated schema crawling, fuzzy edge inference (Levenshtein name similarity & Jaccard value overlap), schema drift detection, and persistent Neo4j backing.
-- 💬 **Natural Language Command Parser**: Multi-LLM engine (Groq, Anthropic, Ollama, Databricks Model Serving) that translates instructions into structured `IntentJSON`.
-- 🔍 **Explainable AI (XAI)**: Generates human-readable reasoning and confidence scores for every table resolution, join condition, and column mapping decision.
-- 📊 **Engine-Agnostic Logical DAG**: Intermediate representation with automated structural validation (cycle detection, missing keys), cost-based join reordering, and iterative patch editing.
-- ⚙️ **PySpark Compiler**: Generates clean, production-ready PySpark code supporting inline transforms (deduplication, hashing/masking, SCD Type 1/2 merges, pivoting, type casting).
-- 🛡️ **Staging-First Safety**: Data is executed into isolated Delta staging paths. Production tables are updated atomically via Delta `MERGE INTO` or atomic swaps only after explicit user approval.
-- 📋 **Immutable Plan Versioning & Rollback**: Versioned migration plans saved as JSON artifacts; Delta time-travel enables instant point-in-time production rollbacks.
-- 🖥️ **Interactive 10-Step React UI**: Dark-themed glassmorphism interface powered by Vite, React Flow, TypeScript, and Zustand.
+**Migrate.io** is an open-source **AI data migration and ETL platform** that turns plain-English migration instructions into **validated, executable PySpark pipelines**.
 
----
+It connects heterogeneous data sources such as **S3, ADLS Gen2, GCS, MinIO, PostgreSQL, SAP ECC, and Databricks**, discovers relationships between schemas, grounds natural-language instructions against real metadata, builds a logical DAG, compiles that DAG to PySpark, executes into isolated staging, and commits approved changes atomically to Delta Lake.
 
-## 🏗️ Platform Architecture
-
+```text
+Natural language
+      │
+      ▼
+Schema discovery + relationship graph
+      │
+      ▼
+Grounded intent + explainable mappings
+      │
+      ▼
+Validated logical DAG
+      │
+      ▼
+PySpark compiler
+      │
+      ▼
+Isolated Delta staging
+      │
+      ▼
+Preview + approval
+      │
+      ▼
+Atomic Delta MERGE / swap
 ```
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   10-Step React UI                                      │
-└───────┬─────────────────────────────────────────────────────────────────────────┬───────┘
-        │ REST API / WebSocket                                                    │
-┌───────▼─────────────────────────────────────────────────────────────────────────▼───────┐
-│                                   FastAPI Backend                                       │
-│                                                                                         │
-│  ┌────────────────┐   ┌─────────────────┐   ┌────────────────┐   ┌───────────────────┐  │
-│  │ Connectors     │   │ Schema Graph    │   │ LLM Parser     │   │ Logical DAG       │  │
-│  │ S3, Databricks,│   │ Crawling,       │   │ Groq / Ollama, │   │ Validator,        │  │
-│  │ Postgres, SAP  │   │ Inference, Neo4j│   │ Grounding, XAI │   │ Optimizer, Patch  │  │
-│  └───────┬────────┘   └────────┬────────┘   └───────┬────────┘   └─────────┬─────────┘  │
-└──────────┼─────────────────────┼────────────────────┼──────────────────────┼────────────┘
-           │                     │                    │                      │
-┌──────────▼─────────────────────▼────────────────────▼──────────────────────▼────────────┐
-│                             Spark Compiler & Execution                                  │
-│                                                                                         │
-│     DAG ──► PySpark Code ──► Staging Write (Delta) ──► Preview ──► Delta MERGE Commit    │
-└─────────────────────────────────────────────────────────────────────────────────────────┘
+
+### The problem
+
+Traditional data migration projects often require manually writing:
+
+- source and destination mappings
+- schema matching logic
+- joins and transformations
+- PySpark / Spark SQL pipelines
+- data quality checks
+- migration validation
+- deployment and rollback procedures
+
+Migrate.io makes the migration plan **machine-readable, inspectable, testable, and reversible** before production data is changed.
+
+---
+
+## Why Migrate.io?
+
+| Traditional migration | Migrate.io |
+|---|---|
+| Manual schema mapping | **Schema relationship graph** |
+| Hand-written ETL code | **Natural language → logical DAG → PySpark** |
+| Hidden join assumptions | **Grounded entity and relationship resolution** |
+| Direct production writes | **Staging-first execution** |
+| Hard-to-audit transformations | **Explainable migration decisions** |
+| Risky migrations | **Preview + explicit approval** |
+| Manual rollback | **Versioned plans + Delta time travel** |
+| Single source type | **Multi-source connector architecture** |
+
+---
+
+## Key Features
+
+- 🔌 **Universal data connectors** for object storage, warehouses, RDBMS, ERP and streaming sources
+- 🕸️ **Schema relationship graph** with automated crawling, fuzzy relationship inference and Neo4j persistence
+- 💬 **Natural-language data migration** through multi-LLM intent parsing
+- 🧠 **Grounded intent resolution** against the actual schema graph instead of unconstrained generation
+- 🔍 **Explainable AI** for table resolution, joins and column mappings
+- 📊 **Logical DAG compiler** with cycle detection, type validation, cost-based join reordering and iterative patching
+- ⚙️ **PySpark code generation** for production-oriented ETL transformations
+- 🛡️ **Staging-first execution** that keeps production isolated until approval
+- 💾 **Delta Lake atomic commits** through `MERGE INTO` or atomic swaps
+- 📋 **Migration plan versioning** with auditable rollback support
+- 🧪 **End-to-end testing** across connectors, graph inference, intent parsing, DAG compilation and execution
+- 🖥️ **Interactive React workflow** for inspecting every migration stage
+
+## Use Cases
+
+### Data warehouse migration
+
+Move data between PostgreSQL, Databricks, object storage and other enterprise systems while preserving explicit schema and transformation logic.
+
+### Legacy ETL modernization
+
+Convert migration requirements written in natural language into structured DAGs and generated PySpark pipelines.
+
+### Databricks Lakehouse ingestion
+
+Build schema-aware ingestion pipelines into Delta Lake with staging, preview, validation and atomic production commits.
+
+### Enterprise data integration
+
+Connect heterogeneous systems such as SAP, PostgreSQL, S3, ADLS, GCS and Databricks through a common migration workflow.
+
+### AI-assisted data engineering
+
+Use LLMs for intent understanding while keeping execution grounded in deterministic schemas, graph relationships and validated intermediate representations.
+
+---
+
+## How It Works
+
+```text
+1. Connect
+   └── Register source + destination systems
+
+2. Discover
+   └── Crawl schemas and build relationship graph
+
+3. Describe
+   └── Write migration instructions in natural language
+
+4. Ground
+   └── Resolve tables, columns, keys and relationships
+
+5. Compile
+   └── Build and validate a logical DAG
+
+6. Generate
+   └── Compile DAG → PySpark
+
+7. Stage
+   └── Execute against isolated Delta staging
+
+8. Preview
+   └── Inspect rows, schemas and migration impact
+
+9. Approve
+   └── Commit through Delta MERGE / atomic swap
+
+10. Audit
+    └── Persist immutable migration plan + commit history
+```
+
+---
+
+## Platform Architecture
+
+```text
+┌──────────────────────────────────────────────────────────────────────┐
+│                         React Migration Studio                       │
+│ Connections · Graph · Intent · DAG · Spark · Preview · Commit       │
+└──────────────────────────────┬───────────────────────────────────────┘
+                               │ REST / WebSocket
+┌──────────────────────────────▼───────────────────────────────────────┐
+│                           FastAPI Backend                            │
+│                                                                      │
+│  Connectors     Schema Graph     Intent / LLM     Logical DAG       │
+│  S3 / ADLS      Neo4j            Grounding        Validation        │
+│  GCS / DBX      Inference        Explainability   Optimization      │
+│  Postgres / SAP                                                        │
+└─────────────┬────────────────┬────────────────┬─────────────────────┘
+              │                │                │
+              └────────────────▼────────────────┘
+                         Spark Compiler
+                              │
+                              ▼
+                    PySpark Transformation
+                              │
+                              ▼
+                     Delta Staging Layer
+                              │
+                         Preview / QA
+                              │
+                         User Approval
+                              │
+                              ▼
+                    Atomic Delta Commit
+                              │
+                              ▼
+                    Production Lakehouse
 ```
 
 ---
@@ -126,7 +276,7 @@ Migrate.io/
 
 1. **Clone & Set Up Environment**:
    ```bash
-   git clone https://github.com/your-org/migrate-io.git
+   git clone https://github.com/dcsgod/migrate.io.git
    cd Migrate.io
 
    # Create .env from template
